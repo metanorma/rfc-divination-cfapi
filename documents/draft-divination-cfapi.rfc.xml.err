@@ -1,0 +1,638 @@
+<?xml version="1.0"?>
+<?rfc strict="yes"?>
+<?rfc compact="yes"?>
+<?rfc subcompact="no"?>
+<?rfc toc="yes"?>
+<?rfc tocdepth="4"?>
+<?rfc symrefs="yes"?>
+<?rfc sortrefs="yes"?>
+<rfc xmlns:xi="http://www.w3.org/2001/XInclude" category="info" ipr="trust200902" submissionType="independent" xml:lang="en" version="3" >
+  <front>
+    <title abbrev="Calendar Fortune Heuristics API">An API For Calendar-Based Fortune Heuristics Services</title>
+    <seriesInfo value="" status="Informational" stream="independent" name="Internet-Draft" asciiName="Internet-Draft"></seriesInfo>
+    <seriesInfo name="" value="" status="informational"></seriesInfo>
+    <author fullname="Gabriel Destiny">
+      <address>
+        <postal></postal>
+        <email>gabriel.destiny@ribose.com</email>
+        <uri></uri>
+      </address>
+    </author>
+    <author fullname="Charise Luck">
+      <address>
+        <postal></postal>
+        <email>charise.luck@ribose.com</email>
+        <uri></uri>
+      </address>
+    </author>
+    <area>Internet</area>
+    <abstract anchor="_8a61cf55-c2d2-c0f3-58c3-23f074ee7e1a">
+
+<t anchor="_65942fbb-b20a-e103-a880-aac56a642ef6">tag::sample[]</t>
+
+</abstract>
+  </front>
+  <middle>
+    <section anchor="_introduction"><name>Introduction</name>
+
+<t anchor="_6c9e09b0-fd2c-b785-ab72-46b6326faea3">Fortune-telling, the practice of predicting information about a
+person's life, is an activity practiced throughout history.</t>
+
+<t anchor="_4120d9b3-b458-c37c-e6b3-deff2837b86c">While there are myriad forms of fortune telling methodologies, this
+document applies to a particular form of service that provides fortune
+heuristics, commonly known as "luck", for a particular subject based
+on a calendar-based input.</t>
+
+<t anchor="_a6a2146a-7d9b-33ca-6889-5e0e55ed4f00">Since HTTP <xref target="RFC7230"></xref> status codes are insufficient to convey
+information about fortune heuristics, this specification defines a
+simple JSON <xref target="RFC8259"></xref> document format for this purpose. The
+response can be used by HTTP APIs to deliver results to non-human
+clients or to an end-user.</t>
+</section>
+    <section anchor="_conventions_used_in_this_document"><name>Conventions Used in This Document</name>
+
+<t anchor="_0671eaa8-51ba-a8f5-cdd3-493a470ac222">The key words "<bcp14>MUST</bcp14>", "<bcp14>MUST NOT</bcp14>", "<bcp14>REQUIRED</bcp14>", "<bcp14>SHALL</bcp14>",
+"<bcp14>SHALL NOT</bcp14>", "<bcp14>SHOULD</bcp14>", "<bcp14>SHOULD NOT</bcp14>", "<bcp14>RECOMMENDED</bcp14>",
+"<strong>NOT RECOMMENDED</strong>", "<bcp14>MAY</bcp14>", and "<bcp14>OPTIONAL</bcp14>" in this document
+are to be interpreted as described in BCP 14 <xref target="RFC2119"></xref> <xref target="RFC8174"></xref>
+when, and only when, they appear in all capitals, as shown here.</t>
+
+<t anchor="_745f9d8e-d38c-4bb1-169a-93567d69f315">The following definitions apply in this document:</t>
+
+<dl anchor="_a3c27229-94b2-546d-5043-567f0d9546de"><dt>Well-known URI</dt><dd><t anchor="_3d544b8e-ad6c-35f7-b768-24e2e640e08f">This specification makes use of the "well-known URI"
+feature of HTTP servers <xref target="RFC5785"></xref> to provide a bootstrapping URI for
+the client usage of fortune heuristics services.</t>
+</dd><dt>Root of Fortune</dt><dd><t anchor="_cf15c2de-5550-670a-a67a-7b361ba540e5">The service discovery endpoint that provides a URI
+list of available fortune heuristic endpoints available, in accordance
+with <xref target="service-discovery"></xref>.</t>
+</dd></dl>
+</section>
+    <section anchor="_fortune_heuristics_service_well_known_uri"><name>Fortune Heuristics Service Well-Known URI</name>
+
+<t anchor="_a1d4802d-b8a7-0136-d557-6fb459397f93">A well-known URI called "fortune" is registered by this specification
+for fortune heuristics services (see <xref target="iana"></xref>).</t>
+
+<t anchor="_97ceb1da-46a5-025b-d88b-887839f3f755">Services complying with this document <bcp14>SHOULD</bcp14> have its well-known
+URI pointing (directly or through redirection) to the Root of Fortune.</t>
+
+<t anchor="_c3c9982e-6c81-7d28-70f2-8f5a82a8b7e5">The Root of Fortune can be used by the client for service discovery,
+namely, the available calendar-based fortune heuristics services
+available on the server, as specified in <xref target="service-discovery"></xref>.</t>
+
+<section anchor="_well_known_uri_redirection"><name>Well-Known URI Redirection</name>
+
+<t anchor="_b4ab54c1-2dce-e5d2-5c87-7430f4b323e6">Servers <bcp14>MUST</bcp14> redirect HTTP requests for that resource to the
+actual "context path" using one of the available mechanisms provided
+by HTTP <xref target="RFC7230"></xref> (e.g., using a 301, 303, or 307 response).</t>
+
+<t anchor="_718ecb36-d4e7-ec09-9b36-5eb11ee8a6be">Clients <bcp14>MUST</bcp14> handle HTTP redirects on the well-known URI.</t>
+</section>
+
+<section anchor="_well_known_uri_cache_behavior"><name>Well-Known URI Cache Behavior</name>
+
+<t anchor="_28c24aee-4d7c-0cb8-bc81-0bdeab0b445e">Servers <bcp14>SHOULD</bcp14> set an appropriate Cache-Control header value (as
+according to <xref target="RFC7234">5.2 of</xref>) in the redirect response to set
+caching behavior as required by the type of response generated.</t>
+</section>
+</section>
+    <section anchor="_new_http_methods_seek_and_divine"><name>New HTTP Methods: SEEK and DIVINE</name>
+
+<t anchor="_c236852a-9201-239e-057e-13699fdc8aa4">This specification defines two new HTTP methods: "SEEK" and "DIVINE"
+methods for HTTP <xref target="RFC7230"></xref>.</t>
+
+<t anchor="_f84c984b-bc57-f3a5-094e-2061f8054fc6">While HTTP GET requests are treated equivalently as the "SEEK" and
+"DIVINE" requests, its usage is discouraged and therefore <bcp14>SHOULD NOT</bcp14>
+be used.</t>
+
+<t anchor="_86a5d6fa-e83f-ecd7-559e-635a10d45d13">Usage of these methods are defined in the sections below.</t>
+</section>
+    <section anchor="_defined_data_types_date_time_formats"><name>Defined Data Types: Date-Time Formats</name>
+
+<t anchor="_5facac45-635a-f419-d7ba-e26e0bcb1825">This specification defines a number of date-time formats as according
+to the conventions of <xref target="RFC3339"></xref> for the unambiguous communication
+between client and server.</t>
+
+<t anchor="_4e06a1e0-f7da-9a92-998e-20bdf0d69331">The types defined are as follows.</t>
+
+<dl anchor="_b56367bd-0e0f-d064-dce8-5c058d587c6c"><dt><tt>DATETIME</tt></dt><dd><t anchor="_b18f9854-e2b0-3c64-1a4b-8e9b0461d68e">As described in <xref target="RFC3339">5.6 of</xref>, with the addition that reduced
+accuracy representations described in <xref target="ISO.8601-1.2018"></xref> are
+supported.  Reduced accuracy date and times are accepted where a
+date or time component (2-digits long) is replaced by "--".</t>
+<t anchor="_c22dd872-c293-8697-b95b-c0e98a7b029d">For example, the date time "2018-04---T01:02:00Z" represents the UTC
+time of 1:02am, on an unknown day within April of the year 2018.</t>
+</dd><dt><tt>DATE</tt></dt><dd><t anchor="_1a133e1f-21f7-f5ae-1627-81c18739728e">As described in "DATETIME", but the "time" component will not be
+taken into account in the algorithm.</t>
+</dd></dl>
+</section>
+    <section anchor="service-discovery"><name>Fortune Heuristics Service Discovery</name>
+
+<section anchor="root-of-fortune"><name>Root of Fortune Path URI ("/")</name>
+
+<t anchor="_b7ecd8d6-1718-8a5f-206e-848c6d5af709">The Root of Fortune URI, defined as "/" in this document, is used for
+service discovery on types of calendar-based fortune heuristics
+available.</t>
+
+<t anchor="_89b7bcbf-6599-a023-837f-51847c7f0de7">An empty SEEK request with the "application/json" request type
+<bcp14>MUST</bcp14> be sent to this endpoint to retrieve the available endpoints.
+All other HTTP methods <bcp14>MUST NOT</bcp14> be supported at this URI.</t>
+
+<t anchor="_95c298e7-b7a2-ce27-137d-3283407b89f8">An example of such a response is as follows:</t>
+
+<sourcecode anchor="_ab597dac-58f1-8472-cc5e-b7d180b24cf1" type="json"><![CDATA[HTTP/1.1 200 Success
+Content-Type: application/json
+Content-Language: en
+
+{
+  "diviners" : [
+    "/astrology",
+    "/bazi",
+  ]
+}]]></sourcecode>
+
+
+<t anchor="_13cef36a-95d8-7dc7-2214-2eb53b3ddda3">A service discovery object <bcp14>MUST</bcp14> have the following members:</t>
+
+<dl anchor="_834d8666-ae18-b7b3-0cc7-284903d50963"><dt><tt>diviners</tt></dt><dd><t anchor="_f6b69cbf-27cb-3719-066c-e208ef0ed93b">(JSON array)
+An array that contains endpoints that conform to this specification.
+All endpoints listed here are relative to the Root of Fortune path.
+For example, the path "/astrology" listed in the example has an
+endpoint path of "[root-of-fortune]/astrology", where
+"[root-of-fortune]" indicates the real path of the Root of Fortune.</t>
+</dd></dl>
+
+<t anchor="_ce50b2a7-defa-5c09-8366-124da669f833">end::sample[]</t>
+</section>
+</section>
+    <section anchor="service-endpoint"><name>Fortune Heuristics Service Endpoint</name>
+
+<t anchor="_08626629-f54f-303d-ac63-e765be098198">An endpoint offering fortune heuristics services <bcp14>MUST</bcp14> adhere to
+specifications in this section.</t>
+
+<t anchor="_c66a330d-264b-68de-c3a3-be633661688e">A service <bcp14>MAY</bcp14> implement multiple divination services based on
+different divination methods, such as the digital oracle shown
+in <xref target="digital-oracle"></xref>.</t>
+
+<figure anchor="digital-oracle">
+
+
+<name>Dimensional Eye, a digital oracle that communicates through one button</name><artwork anchor="_f5bd830a-824d-7564-3380-bae6a33bc57a" alt="An incarnation of the Dimensional Eye" type="ascii-art"><![CDATA[                                  __
+                             __===^-\
+                        __===       -\
+                    __===-           -\
+               __===-                 -\
+         ___===-                       -\
+      ===-               ---__          -\
+      \\\              |||^^\ \__        -\
+       \\\             |||       \__      -\
+        \\\            |||    ______\_     -\
+         \\\           |||  _/-******\\__   -\
+          \\\          ||  /-****_****-\ \_  -\
+           \\\         || |-***/   \***-\  \_ -\
+            \\\        || |-***\___/***-|    \ -\
+             \\\       ||  \-*********-/  __--/ -\
+              \\\      ||    \-******/__--       -\
+               \\\     ||        __--             -\
+                \\\    ||    __--                  -\
+                 \\\   ||__--                       -\
+                  \\\                                -\
+                   \\\                                -\
+                    \\\                                -\
+                     \\\                                -\
+                      \\\                  __            -\
+                       \\\               //##\\           -\
+                        \\\              \\##//            -\
+                         \\\               ^^          __--==^
+                          \\\                    __--===
+                           \\\             __--===
+                            \\\      __--===
+                             \\\ __--==
+                              \\=
+]]></artwork></figure>
+
+<section anchor="endpoint-specification-request"><name>Service Specification Request</name>
+
+<t anchor="_7ecf3291-37e1-8443-7531-4be602a91008">To retrieve capabilities and parameters of an endpoint complying with
+this specification, a service specification JSON object is returned.</t>
+
+<t anchor="_310ec6c4-6a9f-2bd8-0f95-9f39278d51fc">An empty SEEK request with the "application/json" request type
+<bcp14>MUST</bcp14> be sent to this endpoint to retrieve the service
+specification that describes parameters accepted by this endpoint.</t>
+
+<t anchor="_925f1eab-5557-764c-f09b-8d12f1cbb5ba">Two examples of such a response are given below.</t>
+
+<sourcecode anchor="_e9157c10-9fc5-9a22-17ad-79339d5ce2cf" type="json"><![CDATA[HTTP/1.1 200 Success
+Content-Type: application/json
+Content-Language: en
+
+{
+  "description": "Gaze into your upcoming luck!",
+  "details": "https://divine.example.com/manual/astrology-api",
+  "parameters": {
+    "birthday": {
+      "type": "DATE",
+      "description": "Your birth date in UTC"
+    },
+    "targetDateBegin": {
+      "type": "DATE",
+      "description": "Start of the target date range to report on"
+    },
+    "targetDateEnd": {
+      "type": "DATE",
+      "description": "End of the target date range to report on"
+    },
+    "interval": {
+      "values": {
+        "D": "Daily",
+        "M": "Monthly",
+        "Y": "Yearly"
+      },
+      "description": "Available intervals to report on."
+    }
+  }
+}]]></sourcecode>
+
+
+<sourcecode anchor="_df56b7cc-7f2e-e48e-4080-87b40b86b9d7" type="json"><![CDATA[HTTP/1.1 200 Success
+Content-Type: application/json
+Content-Language: en
+
+{
+  "description": "Matches and mis-matches according to the "
+    "Yin Yang and Five Elements techniques",
+  "details": "https://divine.example.com/manual/bazi-api",
+  "parameters": {
+    "birthday": {
+      "type": "DATETIME",
+      "description": "Your birth date and time in UTC"
+    },
+    "targetDateBegin": {
+      "type": "DATETIME",
+      "description": "Start of the target date/time range to report on"
+    },
+    "targetDateEnd": {
+      "type": "DATETIME",
+      "description": "End of the target date/time range to report on"
+    },
+    "interval": {
+      "values": {
+        "H": "Hourly",
+        "D": "Daily",
+        "M": "Monthly",
+        "Y": "Yearly"
+      },
+      "description": "Available intervals to report on."
+    }
+  }
+}]]></sourcecode>
+
+</section>
+
+<section anchor="service-endpoint-specification"><name>Service Specification Object</name>
+
+<t anchor="_4f45e14c-3237-47fd-36e0-363d53acfce2">A service specification object <bcp14>MUST</bcp14> contain the following members.</t>
+
+<dl anchor="_25997f94-4b18-0e8b-d085-6b480c6c70b3"><dt><tt>description</tt></dt><dd><t anchor="_b594d2fe-1663-bcb0-6021-3b28aa1abaeb">(string) A short, human-readable summary of the fortune heuristic
+service at this endpoint. This <bcp14>SHOULD</bcp14> be a stable reference.</t>
+</dd><dt><tt>details</tt></dt><dd><t anchor="_08763320-3ca4-ec70-c8ba-739508a95e80">(URI, optional) A URI reference that provides further details for
+human consumption, such as API documentation that includes details of
+parameters accepted or response states.</t>
+</dd><dt><tt>parameters</tt></dt><dd><t anchor="_b226bc7a-7e46-79e7-cce0-80e67d14b811">(object, mandatory) An object that specifies what parameters
+are accepted by this endpoint. Each parameter key within this object
+specifies an accepted parameter name, and its value is a parameter
+specification object, which is described below.</t>
+</dd></dl>
+
+<t anchor="_e1b55afb-a238-0638-5661-8044ec693af0">A parameter specification object <bcp14>SHOULD</bcp14> contain the following
+members:</t>
+
+<dl anchor="_624dad8f-0501-b40d-d6ad-1dc672484c1b"><dt><tt>type</tt></dt><dd><t anchor="_1d6c24f6-9651-708b-c468-73dcdaef90b8">(string, optional) The value type accepted by this parameter. Value
+types are described in this document. This member is mutually
+exclusive with <tt>values</tt>.</t>
+</dd><dt><tt>description</tt></dt><dd><t anchor="_1985f0ce-0113-86d7-2000-b177a9d78ee1">(string, mandatory) The purpose of this parameter.</t>
+</dd><dt><tt>values</tt></dt><dd><t anchor="_60105cd5-9777-b788-7985-02363c8f1433">(object, optional) The accepted values of this parameter, unlisted
+values <bcp14>SHOULD</bcp14> not be accepted by the parameter. Each key within
+this object specifies an accepted value, and its value provides a
+description of the purpose of the value.</t>
+</dd></dl>
+</section>
+</section>
+    <section anchor="endpoint-report"><name>Fortune Heuristics Report Request and Response</name>
+
+<section anchor="endpoint-report-request"><name>Fortune Heuristics Report Request</name>
+
+<t anchor="_bec5e77b-2cbd-76bf-0f26-db20329dac2f">A request using the HTTP "DIVINE" method and the "application/json"
+type <bcp14>MUST</bcp14> be sent to the fortune heuristic endpoint to retrieve
+results for a fortune heuristic query.</t>
+
+<t anchor="_503cf508-d265-171c-d8ce-0b6ef7fc27fe">The request made <bcp14>MUST</bcp14> conform to the specifications of the
+endpoint, as retrieved via the "SEEK" method described in
+<xref target="endpoint-specification-request"></xref>.</t>
+
+<t anchor="_a17dc487-8d17-c360-b080-8a866fc5c513">An example of a request is provided below.</t>
+
+<sourcecode anchor="_c3f81739-3d64-9ef3-a827-0975179f063e"><![CDATA[URI: /divination/astrology
+Method: DIVINE
+Content-Type: application/json
+Content-Language: en
+
+{
+  "birthday": "1976-02-11T00:00:00Z",
+  "targetDateBegin": "2018-01-01T00:00:00Z",
+  "targetDateEnd": "2019-01-01T00:00:00Z",
+  "interval": "M"
+}]]></sourcecode>
+
+</section>
+
+<section anchor="endpoint-report-response"><name>Fortune Heuristics Report Response</name>
+
+<t anchor="_4a8c3c48-370c-b1f1-2f34-ea51d12d50f1">A fortune heuristic query using the "DIVINE" method triggers a
+response that contains a fortune heuristics report.</t>
+
+<t anchor="_9c460ad5-360b-f871-8bbc-069539be36e3">A successful response returns a JSON object that <bcp14>MUST</bcp14> conform
+to the object structure described in this section.</t>
+
+<t anchor="_8c631c97-e4c0-17be-0f55-d4f2d4334c75">A report object <bcp14>SHOULD</bcp14> contain the following members:</t>
+
+<dl anchor="_9222d57b-8d3a-b9ac-8965-01f190f1e469"><dt><tt>type</tt></dt><dd><t anchor="_a54d5765-fb42-d15f-42af-3bb297f297d4">(URI, mandatory) A URI that defines the type of the report located
+at the <tt>report</tt> key of this object.</t>
+</dd><dt><tt>report</tt></dt><dd><t anchor="_9d060719-c077-af99-255a-f9ea5703924b">(object, mandatory) An object that contains two keys, <tt>intervals</tt>
+and <tt>events</tt>. The <tt>intervals</tt> object contains an array of interval
+objects that matches the demanded intervals in the request within
+the target date range.
+The <tt>events</tt> object contains an array of significant event objects
+within the target date range.</t>
+</dd></dl>
+
+<t anchor="_7e72777c-9923-5d9d-6e27-81f4cb6b77e4">An example of a response is provided below.</t>
+
+<sourcecode anchor="_f79d14a7-8893-ef9d-8797-680fe9eea3f4"><![CDATA[URI: /divination/astrology
+Method: DIVINE
+HTTP/1.1 200 Success
+Content-Type: application/json
+Content-Language: en
+
+{
+  "type": "https://association-of.astrology/reports/monthly",
+  "report": {
+    "intervals": [
+      {
+        "dateStart": "2018-01-01T00:00:00Z",
+        "dateEnd": "2018-02-01T00:00:00Z",
+        "categories": [
+          {
+            "category":
+              "https://divine.example.com/astrology/categories/health"
+            "value": 80,
+            "description": "Charge ahead with excellent health."
+          },
+          {
+            "category":
+              "https://divine.example.com/astrology/categories/love"
+            "value": 70,
+            "description":
+              "Give a certain person or situation another try!"
+          },
+          {
+            "category":
+              "https://divine.example.com/astrology/categories/finance"
+            "value": 5,
+            "description": "You've just realized that you don't have
+              any cash on hand."
+          }
+        ]
+      },
+      {
+        "dateStart": "2018-02-01T00:00:00Z",
+        "dateEnd": "2018-03-01T00:00:00Z",
+        "..."
+      },
+      "..."
+    ],
+    "events": [
+      {
+        "dateStart": "2018-01-15T03:20:00",
+        "dateEnd": "2018-01-16T20:22:15",
+        "description": "The planet of growth and good luck, Jupiter
+          will make a harmonious connection with power planet Pluto,
+          helping you connect with influential people",
+        "recommendation": "Engage in networking during this time."
+      },
+      {
+        "dateStart": "2018-03-22T00:12:40",
+        "dateEnd": "2018-03-28T02:45:03",
+        "description": "Communication planet Mercury enters your sign,
+          which will find you in a busier and chattier mood.",
+        "recommendation":
+          "Take charge of work with your newfound energy."
+      }
+      "..."
+    ]
+  }
+}]]></sourcecode>
+
+
+<t anchor="_1dabcb36-0b2d-e92f-9c46-46b8b7e19300">Fortune heuristic reports are created by a divination output that
+<bcp14>MAY</bcp14> requires quantitative interpretation. A sample representation of
+interpreting a graphical divination output is provided in
+<xref target="divination-message"></xref>.</t>
+
+<figure anchor="divination-message">
+
+
+<name>Forty-nine yarrow sticks reveals a mystical message on fortune</name><artwork anchor="_1cac0101-e0f9-4a65-e61e-82da8ca351da" alt="A mystical pattern in ASCII" type="ascii-art"><![CDATA[                                    0000000000000000000000000
+        0000000000000000000000001 G 1000000000000000000000000
+        0000000000000000000000011 R 1100000000000000000000000
+        0000000000000000000000111 A 1110000000000000000000000
+        0000000000000000000001111 C 1111000000000000000000000
+        0000000000000000000011111 E 1111100000000000000000000
+        0000000000000000000111111 , 1111110000000000000000000
+        0000000000000000001111111   1111111000000000000000000
+        0000000011111111111111111 M 1111111111111111100000000
+        0000000111111111111111111 E 1111111111111111110000000
+        0000001111111111111111111 R 1111111111111111111000000
+        0000011111111111111111111 C 1111111111111111111100000
+        0000111111111111111111111 Y 1111111111111111111110000
+        0001111111111111111111111 , 1111111111111111111111000
+        0011111111111111111111111   1111111111111111111111100
+        0111111111111111111111111 A 1111111111111111111111110
+        0000000000000000011111111 N 1111111100000000000000000
+        0000000000000000111111111 D 1111111110000000000000000
+        0000000000000001111111111   1111111111000000000000000
+        0000000000000011111111111 P 1111111111100000000000000
+        0000000000000111111111111 E 1111111111110000000000000
+        0000000000001111111111111 A 1111111111111000000000000
+        0000000000011111111111111 C 1111111111111100000000000
+        0000000000111111111111111 E 1111111111111110000000000
+        0000000001111111111111111 . 1111111111111111000000000]]></artwork></figure>
+</section>
+
+<section anchor="endpoint-report-interval-obj"><name>Report Interval Object</name>
+
+<t anchor="_1fb76817-6cf6-6d9c-462f-668a0c5098c2">The <tt>intervals</tt> value of a report object contains a number of report
+intervals - each representing a non-overlapping period of the
+selected interval length. When all of these intervals are put
+together, the combined period <bcp14>MUST</bcp14> fully cover the requested
+report target period.</t>
+
+<t anchor="_f8c575a2-2929-e9d6-ae21-d15e0cb93d14">An example interval object is shown below.</t>
+
+<sourcecode anchor="_715cfda0-bd0c-e987-2af8-690ddadf656e" type="json"><![CDATA[{
+  "dateStart": "2018-01-01T00:00:00Z",
+  "dateEnd": "2018-02-01T00:00:00Z",
+  "categories": [
+    {
+      "category":
+        "https://divine.example.com/astrology/categories/health"
+      "value": 80,
+      "description": "Charge ahead with your excellent health."
+    },
+    {
+      "category":
+        "https://divine.example.com/astrology/categories/love"
+      "value": 70,
+      "description": "Give a certain person or situation another try!"
+    },
+    {
+      "category":
+        "https://divine.example.com/astrology/categories/finance"
+      "value": 5,
+      "description": "You've just realized that you don't have
+        any cash on hand."
+    }
+  ]
+}]]></sourcecode>
+
+
+<t anchor="_0c581ef4-c9a6-2824-9b84-23ab29761cd8">An interval object <bcp14>MUST</bcp14> contain the following members:</t>
+
+<dl anchor="_d12590bf-9eda-4192-298a-c60b64b57aad"><dt><tt>dateStart</tt></dt><dd><t anchor="_1663290b-1a55-b9c1-8359-72d5fe0cbcab">(datetime, mandatory) This value specifies the start of the period
+which this interval object applies to.</t>
+</dd><dt><tt>dateEnd</tt></dt><dd><t anchor="_38760b3c-b663-59ca-8543-9dd9dea691c7">(datetime, mandatory) This value specifies the end of the period
+which this interval object applies to.</t>
+</dd></dl>
+
+<t anchor="_501634b7-ace3-25e7-6bc2-4fdc94aade33">In the given example, the <tt>categories</tt> key is an implementation
+specific object that details heuristic results returned by the
+selected algorithm. This <bcp14>MAY</bcp14> differ in different algorithms.</t>
+</section>
+
+<section anchor="endpoint-report-event-obj"><name>Report Events Object</name>
+
+<t anchor="_63bda4db-e024-d251-1ebb-a185551009b4">The <tt>events</tt> value of a report object contains a number of event
+objects. Each event object represents an event relevant to the
+calculation of fortune heuristics during a target report period. These
+events <bcp14>MAY</bcp14> be of variable time lengths, and <bcp14>MAY</bcp14> be overlapping
+amongst each other.</t>
+
+<t anchor="_37ae3da0-6bd4-b15f-06da-5c803e29a2b3">The following example demonstrates two event objects the service
+determines relevant to a user's query.</t>
+
+<sourcecode anchor="_c295e9cd-b535-d2a0-f8f3-a7983715557b" type="json"><![CDATA[{
+  "dateStart": "2018-01-15T03:20:00",
+  "dateEnd": "2018-01-16T20:22:15",
+  "description": "The planet of growth and good luck, Jupiter will
+    make a harmonious connection with power planet Pluto, helping you
+    connect with influential people",
+  "recommendation": "Engage in networking during this time."
+},
+{
+  "dateStart": "2018-03-22T00:12:40",
+  "dateEnd": "2018-03-28T02:45:03",
+  "description": "Communication planet Mercury enters your sign,
+    which will find you in a busier and chattier mood.",
+  "recommendation": "Take charge of work with your newfound energy."
+}]]></sourcecode>
+
+
+<t anchor="_cb3dce87-615e-7a7d-9e66-00df2607c3e4">Similar to an interval object, an event object <bcp14>MUST</bcp14> contain the
+following members:</t>
+
+<dl anchor="_14ea9cfe-ca73-6d9c-5d55-4ac9845d2ce3"><dt><tt>dateStart</tt></dt><dd><t anchor="_797aebc7-7827-6fe8-a92d-19e4409cb849">(datetime, mandatory) This value specifies the start of the period
+described by the event.</t>
+</dd><dt><tt>dateEnd</tt></dt><dd><t anchor="_e9e74fdc-659e-dfca-2d16-7b9643208f7a">(datetime, mandatory) This value specifies the end of the period
+described by the event.</t>
+</dd></dl>
+
+<t anchor="_9d88373c-f030-7687-b0de-4257fb0b33cb">In the given example, the keys <tt>description</tt> and <tt>recommendation</tt>
+are implementation-specific details. This <bcp14>MAY</bcp14> differ in different
+algorithms.</t>
+</section>
+
+<section anchor="endpoint-report-errors"><name>Report Generation Errors</name>
+
+<t anchor="_c8765880-cc7c-362b-5846-18a25096d675">This specification makes use of normal HTTP error codes with the
+following extensions.</t>
+
+<t anchor="_87875313-38b0-8650-663c-f67c1d6f27bf">Errors <bcp14>MUST</bcp14> be returned using the Problem JSON Structure as
+accordance with <xref target="RFC7807"></xref>.</t>
+
+<dl anchor="_cd482aa0-036e-ac57-cee4-b168975b99ca"><dt>422 Unprocessable Entity</dt><dd><t anchor="_e6b2aba5-a0c1-0f22-9cac-b964029a567d">For example, a malformed date-time parameter, or an illogical input,
+such as when the subject's birthday occurs after the report target
+date period.</t>
+</dd><dt>473 Beyond Existing Capability</dt><dd><t anchor="_a0324520-16ab-aebc-1e12-0a78b21abd22">The service determines that the outcome is too difficult to predict.
+For example, in the case where the calculation is too complex to
+complete in a certain time period. The service <bcp14>SHOULD</bcp14> issue this
+response code to indicate that the client should not try the same
+request again.</t>
+</dd><dt>474 Outcome Impossible</dt><dd><t anchor="_15105b63-e103-37e1-665d-b437a271c091">The service determines that the outcome is impossible. For example,
+when the algorithm determines that the subject will have deceased
+before the start of the requested target period.</t>
+</dd></dl>
+</section>
+</section>
+    <section anchor="security"><name>Security Considerations</name>
+
+<ul anchor="_90c73d04-9ef1-838a-e487-7a4b295a8acf"><li>TLS <xref target="RFC5246"></xref> and authenticated HTTP requests should be used to
+protect the DIVINE request and responses due to the personal nature
+of information transmitted.</li>
+<li>A client <bcp14>SHOULD</bcp14> verify the identity of the server on every
+request to prevent impersonation or man-in-the-middle attacks, as data
+transmitted to and from the server is sensitive information, and at
+times critical information to the user.</li>
+<li>Synchronization of client and server time <bcp14>MUST</bcp14> be
+well-considered in the implementation of this specification. A
+mismatch of client and server time <bcp14>MAY</bcp14> lead to algorithm
+miscalculations that can cause mistaken choices of a user that depends
+on the reliability of this system.</li>
+</ul>
+</section>
+    <section anchor="iana"><name>IANA Considerations</name>
+
+<section anchor="_well_known_uri_registrations"><name>Well-Known URI Registrations</name>
+
+<t anchor="_b62755b5-6d4f-9284-741e-7e02d108bd01">This document defines a well-known URI using the registration
+procedure and template from <xref target="RFC5785">5.1 of</xref>.</t>
+
+<section anchor="_fortune_well_known_uri_registration"><name>"fortune" Well-Known URI Registration</name>
+
+<dl anchor="_fc1d3ef2-7161-b90d-093f-d7aa1c76f2c4"><dt>URI suffix</dt><dd><t anchor="_6ca8511b-d315-c85b-73f1-188a83d8dd1c">fortune</t>
+</dd><dt>Change controller</dt><dd><t anchor="_42255564-2b7d-edb5-20c8-f7502d0924d8">IETF</t>
+</dd><dt>Specification document(s)</dt><dd><t anchor="_1c3f9104-90b7-677d-d882-ee9f91df6606">This document</t>
+</dd><dt>Related information</dt><dd><t anchor="_27b7ff54-c8e2-7b11-2456-3e5472ac52bf">N/A.</t>
+</dd></dl>
+
+<t anchor="_f952dfb2-67e0-ba21-3cb0-9bf9b7398d0f">tag::sample[]</t>
+</section>
+</section>
+</section>
+  </middle>
+  <back>
+    <references anchor="_normative_references">
+      <name>Normative References</name>
+      <passthrough></passthrough>
+    </references>
+    <references anchor="_informative_references">
+      <name>Informative References</name>
+      <passthrough></passthrough>
+    </references>
+    <section anchor="_acknowledgements"><name>Acknowledgements</name>
+
+<t anchor="_b47af2bf-12d6-9342-cfca-1169005b19c0">The authors thank the following individuals for their valuable
+feedback on this specification, and commend them for making fortune
+heuristics more accessible for the benefit of mankind.</t>
+
+<t anchor="_ed54c865-5907-d512-8662-2636e2e9fe17">end::sample[]</t>
+</section>
+  </back>
+</rfc>

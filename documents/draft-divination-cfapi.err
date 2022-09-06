@@ -1,0 +1,77 @@
+/__w/rfc-divination-cfapi/rfc-divination-cfapi/site/documents/draft-divination-cfapi.err errors
+
+
+== Anchors
+
+(XML Line 000035): Crossreference target RFC7230 is undefined
+	<xref target="RFC7230"/>
+(XML Line 000037): Crossreference target RFC8259 is undefined
+	<xref target="RFC8259"/>
+(XML Line 000047): Crossreference target RFC2119 is undefined
+	<xref target="RFC2119"/>
+(XML Line 000047): Crossreference target RFC8174 is undefined
+	<xref target="RFC8174"/>
+(XML Line 000054): Crossreference target RFC5785 is undefined
+	<xref target="RFC5785"/>
+(XML Line 000081): Crossreference target RFC7230 is undefined
+	<xref target="RFC7230"/>
+(XML Line 000089): Crossreference target RFC7234 is undefined
+	<xref target="RFC7234">5.2 of</xref>
+(XML Line 000097): Crossreference target RFC7230 is undefined
+	<xref target="RFC7230"/>
+(XML Line 000109): Crossreference target RFC3339 is undefined
+	<xref target="RFC3339"/>
+(XML Line 000115): Crossreference target RFC3339 is undefined
+	<xref target="RFC3339">5.6 of</xref>
+(XML Line 000116): Crossreference target ISO.8601-1.2018 is undefined
+	<xref target="ISO.8601-1.2018"/>
+(XML Line 000598): Crossreference target RFC7807 is undefined
+	<xref target="RFC7807"/>
+(XML Line 000623): Crossreference target RFC5246 is undefined
+	<xref target="RFC5246"/>
+(XML Line 000646): Crossreference target RFC5785 is undefined
+	<xref target="RFC5785">5.1 of</xref>
+
+
+== Metanorma XML Style Warning
+
+(XML Line 000065): Hanging paragraph in clause
+	<clause id="_fortune_heuristics_service_well_known_uri" inline-header="false" obligation="normative">
+	<title>Fortune Heuristics Service Well-Known URI</title>
+	<p id="_a1d4802d-b8a7-0136-d557-6fb459397f93">A well-known URI called "fortune" is registered by this specification
+	for fortune heuristics services (see <xref target="iana"/>).</p>
+	
+(XML Line 000171): Hanging paragraph in clause
+	<clause id="service-endpoint" inline-header="false" obligation="normative">
+	<title>Fortune Heuristics Service Endpoint</title>
+	<p id="_08626629-f54f-303d-ac63-e765be098198">An endpoint offering fortune heuristics services <bcp14>MUST</bcp14> adhere to
+	specifications in this section.</p>
+	
+(XML Line 000643): Hanging paragraph in clause
+	<clause id="_well_known_uri_registrations" inline-header="false" obligation="normative">
+	<title>Well-Known URI Registrations</title>
+	<p id="_b62755b5-6d4f-9284-741e-7e02d108bd01">This document defines a well-known URI using the registration
+	procedure and template from <xref target="RFC5785">5.1 of</xref>.</p>
+	
+
+
+== Metanorma XML Syntax
+
+(XML Line 000007:14): element "contributor" not allowed yet; missing required element "docidentifier"
+(XML Line 000013:123): character content of element "revision-date" invalid; must be a string matching the regular expression "([\+\-]?\d{4})((-?)((0[1-9]|1[0-2])((-?)([12]\d|0[1-9]|3[01]))?|W([0-4]\d|5[0-2])(-?[1-7])?|(00[1-9]|0[1-9]\d|[12]\d{2}|3([0-5]\d|6[1-6]))))?"
+(XML Line 000020:88): attribute "obligation" not allowed here; expected attribute "language", "numbered", "removeInRFC", "script" or "toc"
+(XML Line 000035:82): IDREF "RFC7230" without matching ID
+(XML Line 000037:37): IDREF "RFC8259" without matching ID
+(XML Line 000047:70): IDREF "RFC2119" without matching ID
+(XML Line 000047:95): IDREF "RFC8174" without matching ID
+(XML Line 000054:49): IDREF "RFC5785" without matching ID
+(XML Line 000081:33): IDREF "RFC7230" without matching ID
+(XML Line 000089:37): IDREF "RFC7234" without matching ID
+(XML Line 000097:42): IDREF "RFC7230" without matching ID
+(XML Line 000109:47): IDREF "RFC3339" without matching ID
+(XML Line 000115:90): IDREF "RFC3339" without matching ID
+(XML Line 000116:71): IDREF "ISO.8601-1.2018" without matching ID
+(XML Line 000598:41): IDREF "RFC7807" without matching ID
+(XML Line 000623:126): IDREF "RFC5246" without matching ID
+(XML Line 000646:52): IDREF "RFC5785" without matching ID
+(XML Line 000674:87): attribute "inline-header" not allowed here; expected attribute "language", "numbered", "obligation", "removeInRFC", "script" or "toc"
