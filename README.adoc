@@ -1,6 +1,7 @@
 = An API For Calendar-Based Fortune Heuristics Services (in AsciiRFC / Metanorma-IETF)
 
-image:https://travis-ci.org/metanorma/rfc-divination-cfapi.svg?branch=master["Build Status", link="https://travis-ci.org/metanorma/rfc-divination-cfapi"]
+image:https://github.com/metanorma/rfc-divination-cfapi/actions/workflows/docker.yml/badge.svg["Build Status", link="https://github.com/metanorma/rfc-divination-cfapi/actions/workflows/docker.yml"]
+image:https://github.com/metanorma/rfc-divination-cfapi/actions/workflows/generate.yml/badge.svg["Build Status", link="https://github.com/metanorma/rfc-divination-cfapi/actions/workflows/generate.yml"]
 
 This document is available in its rendered forms here:
 
